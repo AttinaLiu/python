@@ -35,7 +35,17 @@
           model = Book
           fields = ['author', 'category']
   ```
-
+- **连表查询**：可以实现连表查询，用 `当前字段__另一个表里的字段` 实现，需要在model里面设定连表
+```python
+  creat_by = models.ForeignKey(
+    User,                       # 目标模型
+    verbose_name='创建者',       # 可读名称
+    related_name='created_workflow',  # 反向查询名称 利用用户名字查询所有数据：user.created_workflow.all()
+    null=True,                  # 允许空值
+    blank=True,                 # 允许表单空白
+    on_delete=models.CASCADE    # 删除行为 如果用户被删除，对应的记录也会被删除
+)
+```
 #### **4. Service（服务层）**
 - **作用**：封装业务逻辑，与多个 Model 交互（可选层）。
 - **技术实现**：自定义 Python 类或函数。
