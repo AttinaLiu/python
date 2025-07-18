@@ -46,6 +46,10 @@
     on_delete=models.CASCADE    # 删除行为 如果用户被删除，对应的记录也会被删除
 )
 ```
+具体的连表查询方法：
+```python
+    create_by_name = django_filters.CharFilter(field_name='create_by__username', lookup_expr='icontains')
+```
 #### **4. Service（服务层）**
 - **作用**：封装业务逻辑，与多个 Model 交互（可选层）。
 - **技术实现**：自定义 Python 类或函数。
