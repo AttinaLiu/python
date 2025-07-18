@@ -1,0 +1,99 @@
+在 Python 中，当子类和父类都定义了同名的类属性时，子类的属性会覆盖父类的属性。但在父类的方法中，访问的 **默认是父类自己的属性**，除非显式通过 `self` 引用实例。以下是具体分析：
+
+
+### **1. 类属性 vs 实例属性**
+- **类属性**：直接在类中定义的变量（如 `a = 11`）。
+- **实例属性**：在 `__init__` 或其他方法中通过 `self.a = ...` 定义的变量。
+
+当通过 `self.a` 访问属性时，Python 会先查找实例属性，再查找类属性（包括父类的类属性）。
+
+
+### **2. 父类方法中访问 `a` 的两种情况**
+
+#### **情况 1：父类方法直接访问 `a`**
+父类方法中直接使用 `a`（无 `self`），会访问 **父类的类属性**。
+
+```python
+class Parent:
+    a = None
+    
+    def method(self):
+        print(a)  # 直接访问父类的类属性
+
+class Child(Parent):
+    a = 11
+
+child = Child()
+child.method()  # 输出: None
+```
+
+#### **情况 2：父类方法通过 `self.a` 访问**
+父类方法中使用 `self.a`，会访问 **实例的属性**（优先查找子类覆盖的类属性）。
+
+```python
+class Parent:
+    a = None
+    
+    def method(self):
+        print(self.a)  # 通过 self 访问，优先查找子类的类属性
+
+class Child(Parent):
+    a = 11
+
+child = Child()
+child.method()  # 输出: 11
+```
+
+
+### **3. 实例属性覆盖类属性**
+如果实例属性被显式设置（如 `__init__` 中），`self.a` 会优先使用实例属性。
+
+```python
+class Parent:
+    a = None
+    
+    def method(self):
+        print(self.a)  # 通过 self 访问，优先使用实例属性
+
+class Child(Parent):
+    a = 11
+    
+    def __init__(self):
+        self.a = 22  # 设置实例属性
+
+child = Child()
+child.method()  # 输出: 22
+```
+
+
+### **4. 总结**
+| **父类方法中的访问方式** | **子类是否覆盖 `a`** | **输出结果**       | **原因**                                                                 |
+|--------------------------|----------------------|--------------------|------------------------------------------------------------------------|
+| `print(a)`               | 是（`a = 11`）       | `None`             | 直接访问父类的类属性，不受子类影响。                                                   |
+| `print(self.a)`          | 是（`a = 11`）       | `11`               | 通过 `self` 访问，优先查找子类的类属性。                                                 |
+| `print(self.a)`          | 是，但实例属性覆盖   | 实例属性的值（如 `22`） | 通过 `self` 访问，优先使用实例属性（即使子类覆盖了类属性）。                                          |
+
+
+### **关键代码示例**
+```python
+class Parent:
+    a = None
+    
+    def direct_access(self):
+        print("直接访问 a:", a)  # 父类的类属性
+    
+    def self_access(self):
+        print("通过 self 访问 a:", self.a)  # 实例的属性（可能来自子类）
+
+class Child(Parent):
+    a = 11
+
+child = Child()
+child.direct_access()  # 输出: 直接访问 a: None
+child.self_access()    # 输出: 通过 self 访问 a: 11
+```
+
+
+### **结论**
+- **若父类方法使用 `a`**：无论子类是否覆盖 `a`，都返回父类的 `None`。
+- **若父类方法使用 `self.a`**：返回子类覆盖的值（`11`），除非实例属性显式覆盖。
