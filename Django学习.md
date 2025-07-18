@@ -79,32 +79,8 @@
 
 
 ### **三、请求处理流程图**
-graph TD
-    classDef process fill:#E5F6FF,stroke:#73A6FF,stroke-width:2px;
-    classDef data fill:#FFEBEB,stroke:#E68994,stroke-width:2px;
-    
-    A[客户端请求]:::process --> B[URL 路由]:::process
-    B --> C[View 处理]:::process
-    
-    C --> D{业务逻辑}:::process
-    D -->|复杂逻辑| E[Service 层]:::process
-    D -->|简单逻辑| F[直接处理]:::process
-    
-    E --> F
-    
-    F --> G[Filter 筛选数据]:::process
-    G --> H[Model 查询数据]:::process
-    H --> I[(数据库)]:::data
-    
-    I --> J[Serializer 序列化数据]:::process
-    J --> K[返回 JSON 响应]:::process
-    
-    L[客户端数据]:::data --> M[Serializer 验证]:::process
-    M --> N{验证结果}:::process
-    N -->|有效| O[View 创建/更新]:::process
-    N -->|无效| P[返回错误信息]:::process
-    
-    O --> H
+<img width="1348" height="2793" alt="image" src="https://github.com/user-attachments/assets/86b6ce70-45bd-418a-9ff9-7b40afc47e83" />
+
   
 
 
